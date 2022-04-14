@@ -1,5 +1,5 @@
 {
-  "name": "Capture Website API",
-  "description": "Capture screenshots of websites as a (host it yourself) API",
+  "name": "Snipper - Website Screenshot API ",
+  "description": "Capture screenshots of websites as a API - Snip it with Snipper!",
   "stack": "container"
 }
