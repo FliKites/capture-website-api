@@ -72,12 +72,17 @@ function getQueryParameters(req) {
     result.launchOptions = {
         // headless: false,
         args: [
+            "--proxy-server='http://127.0.0.1:808'",
+            '--proxy-bypass-list=*',
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--hide-scrollbars',
             '--mute-audio',
-            '--use-fake-ui-for-media-stream' // Pages that ask for webcam/microphone access
-        ]
+            '--use-fake-ui-for-media-stream', // Pages that ask for webcam/microphone acces
+            '--ignore-certificate-errors',
+            '--ignore-certificate-errors-spki-list',
+            '--enable-features=NetworkService'
+            ]
     };
     if (!result.timeout) {
         result.timeout = getDefaultTimeoutSeconds();
