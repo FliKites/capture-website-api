@@ -6,5 +6,5 @@ services:
     build:
       context: .
     ports:
-      - "80:80"
+      - "8081:8081"
     command: yarn start
