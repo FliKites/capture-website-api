@@ -35,8 +35,16 @@ export async function capture(req, res) {
 async function doCaptureWork(req, res) {
     latest.date = new Date();
     const queryParams = getQueryParameters(req);
-    const url = queryParams.url;
-    latest.url = url;
+     const urls = queryParams.url;
+function formatUrl(urls)
+{
+    var httpString = "http://";
+    var httpsString = "https://";
+    if (urls.substr(0, httpString.length).toLowerCase() !== httpString && urls.substr(0, httpsString.l>    urls = httpsString + urls;
+    return urls;
+}
+const url = formatUrl(urls);
+latest.url = url;
     console.info('Capturing URL: ' + url + ' ...');
     if (queryParams.plainPuppeteer === 'true') {
         await tryWithPuppeteer(url, queryParams, res);
@@ -71,7 +79,7 @@ function getQueryParameters(req) {
     const result = getQueryParametersFromUrl(req);
     result.launchOptions = {
         // headless: false,
-        args: [
+      args: [
             "--proxy-server='http://127.0.0.1:808'",
             '--proxy-bypass-list=*',
             '--no-sandbox',
