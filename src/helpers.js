@@ -4,8 +4,13 @@ import PQueue from "p-queue";
 import {getConcurrency, getDefaultTimeoutSeconds, getMaxQueueLength, getSecret, getShowResults} from "./config.js";
 import 'dotenv/config';
 
+const EventEmitter = require('events');
+
+class queue extends EventEmitter {}
+
 const queue = new PQueue({concurrency: getConcurrency()});
 queue.setMaxListeners(999);
+queue.emit('event');
 const latest = {
     capture: undefined,
     url: undefined,
