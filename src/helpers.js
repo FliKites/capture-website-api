@@ -33,18 +33,11 @@ export async function capture(req, res) {
 }
 
 async function doCaptureWork(req, res) {
-    latest.date = new Date();
+    latest.date = date.now();
     const queryParams = getQueryParameters(req);
-     const urls = queryParams.url;
-function formatUrl(urls)
-{
-    var httpString = "http://";
-    var httpsString = "https://";
-    if (urls.substr(0, httpString.length).toLowerCase() !== httpString && urls.substr(0, httpsString.l>    urls = httpsString + urls;
-    return urls;
-}
-const url = formatUrl(urls);
-latest.url = url;
+    const url = new URL(queryParams.url);
+    url.protocol = 'http';
+    latest.url = url.toString();
     console.info('Capturing URL: ' + url + ' ...');
     if (queryParams.plainPuppeteer === 'true') {
         await tryWithPuppeteer(url, queryParams, res);
