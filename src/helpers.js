@@ -5,7 +5,7 @@ import {getConcurrency, getDefaultTimeoutSeconds, getMaxQueueLength, getSecret, 
 import 'dotenv/config';
 
 const queue = new PQueue({concurrency: getConcurrency()});
-
+queue.setMaxListeners(999);
 const latest = {
     capture: undefined,
     url: undefined,
