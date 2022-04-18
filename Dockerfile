@@ -21,9 +21,15 @@ RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
     && mkdir -p /home/pptruser/Downloads \
     && chown -R pptruser:pptruser /home/pptruser
 RUN mkdir /app
+
+RUN mkdir /app/certs
+COPY /etc/ssl/certs/cert.crt /app/certs/cert.crt
+COPY /etc/ssl/certs/cert.key /app/certs/cert.key
+
 COPY .profile.d /app/.profile.d
 COPY package.json yarn.lock app/
 WORKDIR /app
+
 RUN yarn
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN chown -R pptruser:pptruser /app

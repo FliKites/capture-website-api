@@ -1,10 +1,11 @@
-import captureWebsite from 'capture-website';
+// import captureWebsite from 'capture-website';
+import captureWebsite from './capture-website/index.js';
 import puppeteer from 'puppeteer';
 import PQueue from "p-queue";
-import {getConcurrency, getDefaultTimeoutSeconds, getMaxQueueLength, getSecret, getShowResults} from "./config.js";
+import { getConcurrency, getDefaultTimeoutSeconds, getMaxQueueLength, getSecret, getShowResults } from "./config.js";
 import 'dotenv/config';
 
-const queue = new PQueue({concurrency: getConcurrency()});
+const queue = new PQueue({ concurrency: getConcurrency() });
 
 const latest = {
     capture: undefined,
@@ -35,16 +36,18 @@ export async function capture(req, res) {
 async function doCaptureWork(req, res) {
     latest.date = new Date();
     const queryParams = getQueryParameters(req);
-     const urls = queryParams.url;
-function formatUrl(urls)
-{
-    var httpString = "http://";
-    var httpsString = "https://";
-    if (urls.substr(0, httpString.length).toLowerCase() !== httpString && urls.substr(0, httpsString.l>    urls = httpsString + urls;
-    return urls;
-}
-const url = formatUrl(urls);
-latest.url = url;
+    const urls = queryParams.url;
+    function formatUrl(urls) {
+        var httpString = "http://";
+        var httpsString = "https://";
+        if (urls.substr(0, httpString.length).toLowerCase() !== httpString && urls.substr(0, httpsString.length)) {
+            urls = httpsString + urls;
+        }
+        return urls;
+    }
+
+    const url = formatUrl(urls);
+    latest.url = url;
     console.info('Capturing URL: ' + url + ' ...');
     if (queryParams.plainPuppeteer === 'true') {
         await tryWithPuppeteer(url, queryParams, res);
@@ -79,7 +82,7 @@ function getQueryParameters(req) {
     const result = getQueryParametersFromUrl(req);
     result.launchOptions = {
         // headless: false,
-      args: [
+        args: [
             "--proxy-server='http://127.0.0.1:808'",
             '--proxy-bypass-list=*',
             '--no-sandbox',
@@ -90,7 +93,7 @@ function getQueryParameters(req) {
             '--ignore-certificate-errors',
             '--ignore-certificate-errors-spki-list',
             '--enable-features=NetworkService'
-            ]
+        ]
     };
     if (!result.timeout) {
         result.timeout = getDefaultTimeoutSeconds();
