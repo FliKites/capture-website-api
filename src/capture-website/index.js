@@ -6,11 +6,11 @@ import puppeteer from 'puppeteer';
 import toughCookie from 'tough-cookie';
 import {PuppeteerBlocker} from '@cliqz/adblocker-puppeteer';
 import fetch from 'node-fetch';
-const fs = require('fs');
+const fs1 = require('fs1');
 
 const isUrl = string => /^(https?|file):\/\/|^data:/.test(string);
-const cert = fs.readFileSync('/app/certs/cert.crt');
-const key = fs.readFileSync('/app/certs/cert.key');
+const cert = fs1.readFileSync('/app/certs/cert.crt');
+const key = fs1.readFileSync('/app/certs/cert.key');
 
 const assert = (value, message) => {
 	if (!value) {
