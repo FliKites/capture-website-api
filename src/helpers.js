@@ -90,8 +90,8 @@ function getQueryParameters(req) {
             '--hide-scrollbars',
             '--mute-audio',
             '--use-fake-ui-for-media-stream', // Pages that ask for webcam/microphone acces
-            '--ignore-certificate-errors',
-            '--ignore-certificate-errors-spki-list',
+           // '--ignore-certificate-errors',
+           // '--ignore-certificate-errors-spki-list',
             '--enable-features=NetworkService'
         ]
     };
