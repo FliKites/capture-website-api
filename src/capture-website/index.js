@@ -185,7 +185,7 @@ const internalCaptureWebsite = async (input, options) => {
 					console.error(`Unable to call ${options.uri}`, err);
 					return interceptedRequest.abort('connectionrefused');
 				}
-				
+
 				// Return retrieved response to interceptedRequest
 				interceptedRequest.respond({
 					status: resp.statusCode,
