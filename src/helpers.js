@@ -40,7 +40,10 @@ async function doCaptureWork(req, res) {
     function formatUrl(urls) {
         var httpString = "http://";
         var httpsString = "https://";
-        if (urls.substr(0, httpString.length).toLowerCase() !== httpString && urls.substr(0, httpsString.length)) {
+        console.log('urls: ', urls)
+        console.log('https: ', urls.toLowerCase().includes('https://'))
+        console.log('http: ', urls.toLowerCase().includes('http://'))
+        if (!urls.toLowerCase().includes('https://') && !urls.toLowerCase().includes('http://')) {
             urls = httpsString + urls;
         }
         return urls;
@@ -90,8 +93,8 @@ function getQueryParameters(req) {
             '--hide-scrollbars',
             '--mute-audio',
             '--use-fake-ui-for-media-stream', // Pages that ask for webcam/microphone acces
-            '--ignore-certificate-errors',
-            '--ignore-certificate-errors-spki-list',
+            // '--ignore-certificate-errors',
+            // '--ignore-certificate-errors-spki-list',
             '--enable-features=NetworkService'
         ]
     };

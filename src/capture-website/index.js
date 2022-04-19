@@ -6,11 +6,14 @@ import puppeteer from 'puppeteer';
 import toughCookie from 'tough-cookie';
 import {PuppeteerBlocker} from '@cliqz/adblocker-puppeteer';
 import fetch from 'node-fetch';
-const fs = require('fs');
+import request from 'request';
+import fs2 from 'fs';
 
 const isUrl = string => /^(https?|file):\/\/|^data:/.test(string);
-const cert = fs.readFileSync('/app/certs/cert.crt');
-const key = fs.readFileSync('/app/certs/cert.key');
+// const cert = fs2.readFileSync('/app/certs/cert.crt');
+// const key = fs2.readFileSync('/app/certs/cert.key');
+const cert = null;
+const key = null;
 
 const assert = (value, message) => {
 	if (!value) {
@@ -166,44 +169,31 @@ const internalCaptureWebsite = async (input, options) => {
         page.on('request', interceptedRequest => {
             // Intercept Request, pull out request options, add in client cert
             const options = {
-                // uri: interceptedRequest.url(),
+                uri: interceptedRequest.url(),
                 method: interceptedRequest.method(),
                 headers: interceptedRequest.headers(),
                 body: interceptedRequest.postData(),
                 cert: cert,
-                key: key
+                key: key,
+				gzip: true,
             };
 
-             fetch(interceptedRequest.url(), options)
-             .then(resp => {
-                return interceptedRequest.respond({
-                    status: resp.status,
-                    contentType: resp.headers['content-type'],
-                    headers: resp.headers,
-                    body: resp.body
-                });
-             })
-             .catch(err => {
-                return interceptedRequest.abort('connectionrefused');
-             });
             
-            // // Fire off the request manually (example is using using 'request' lib)
-            // request(options, function(err, resp, body) {
-            //     // Abort interceptedRequest on error
-            //     if (err) {
-            //         console.error(`Unable to call ${options.uri}`, err);
-            //         return interceptedRequest.abort('connectionrefused');
-            //     }
-    
-            //     // Return retrieved response to interceptedRequest
-            //     interceptedRequest.respond({
-            //         status: resp.statusCode,
-            //         contentType: resp.headers['content-type'],
-            //         headers: resp.headers,
-            //         body: body
-            //     });
-            // });
-    
+			 request(options, function(err, resp, body) {
+				// Abort interceptedRequest on error
+				if (err) {
+					console.error(`Unable to call ${options.uri}`, err);
+					return interceptedRequest.abort('connectionrefused');
+				}
+				
+				// Return retrieved response to interceptedRequest
+				interceptedRequest.respond({
+					status: resp.statusCode,
+					contentType: resp.headers['content-type'],
+					headers: resp.headers,
+					body: body
+				});
+			});
         });
 
 		return await internalCaptureWebsiteCore(input, options, page, browser);
@@ -329,6 +319,8 @@ const internalCaptureWebsiteCore = async (input, options, page, browser) => {
 		timeout: timeoutInMilliseconds,
 		waitUntil: 'networkidle2',
 	});
+
+	
 
 	if (options.disableAnimations) {
 		await page.evaluate(disableAnimations, options.disableAnimations);
