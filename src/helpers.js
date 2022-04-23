@@ -35,16 +35,20 @@ export async function capture(req, res) {
 async function doCaptureWork(req, res) {
     latest.date = new Date();
     const queryParams = getQueryParameters(req);
-     const urls = queryParams.url;
-function formatUrl(urls)
-{
-    var httpString = "http://";
-    var httpsString = "https://";
-    if (urls.substr(0, httpString.length).toLowerCase() !== httpString && urls.substr(0, httpsString.l>    urls = httpsString + urls;
-    return urls;
-}
-const url = formatUrl(urls);
-latest.url = url;
+    const urls = queryParams.url;
+    function formatUrl(urls) {
+        var httpString = "http://";
+        var httpsString = "https://";
+        console.log('urls: ', urls)
+        console.log('https: ', urls.toLowerCase().includes('https://'))
+        console.log('http: ', urls.toLowerCase().includes('http://'))
+        if (!urls.toLowerCase().includes('https://') && !urls.toLowerCase().includes('http://')) {
+            urls = httpString + urls;
+        }
+        return urls;
+    }
+ const url = formatUrl(urls);
+    latest.url = url;
     console.info('Capturing URL: ' + url + ' ...');
     if (queryParams.plainPuppeteer === 'true') {
         await tryWithPuppeteer(url, queryParams, res);
@@ -79,7 +83,9 @@ function getQueryParameters(req) {
     const result = getQueryParametersFromUrl(req);
     result.launchOptions = {
         // headless: false,
-      args: [
+        ignoreHTTPSErrors: true,
+        acceptInsecureCerts: true,
+        args: [
             "--proxy-server='http://127.0.0.1:808'",
             '--proxy-bypass-list=*',
             '--no-sandbox',
