@@ -17,17 +17,12 @@ RUN mkdir -p /usr/share/fonts/emoji \
     && chmod -R +rx /usr/share/fonts/ \
     && fc-cache -fv
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
-    && mkdir -p /home/pptruser/Downloads \
-    && chown -R pptruser:pptruser /home/pptruser
 RUN mkdir /app
 COPY .profile.d /app/.profile.d
 COPY package.json yarn.lock app/
 WORKDIR /app
 RUN yarn
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-RUN chown -R pptruser:pptruser /app
 COPY src src
-RUN chown -R pptruser:pptruser /app/src
-USER pptruser
+USER root
 CMD yarn start
